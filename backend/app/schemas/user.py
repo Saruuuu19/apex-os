@@ -1,13 +1,22 @@
-from pydantic import BaseModel, EmailStr, Field
-from pydantic import ConfigDict
-from uuid import UUID
+import re
 from datetime import datetime
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class UserCreate(BaseModel):
     username: str = Field(min_length=5, max_length=20)
     email: EmailStr
     password: str = Field(min_length=8)
+
+    @field_validator("username")
+    def validate_username(cls, username: str) -> str:
+        if not re.match(r"^[a-zA-Z0-9_]+$", username):
+            raise ValueError(
+                "Username can only contain letters, numbers, and underscores"
+            )
+        return username
 
 
 class UserResponse(BaseModel):
@@ -19,3 +28,8 @@ class UserResponse(BaseModel):
     email: EmailStr
 
     created_at: datetime
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
