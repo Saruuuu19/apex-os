@@ -19,18 +19,26 @@ router = APIRouter(prefix="/auth", tags=["Users"])
 )
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
 
-    existing_user = (
-        db.query(User)
-        .filter((User.username == user.username) | (User.email == user.email))
-        .first()
+    existing_users = db.scalars(
+        select(User).where(
+            or_(User.username == user.username, User.email == user.email)
+        )
+    ).all()
+
+    username_exists = any(
+        existing_user.username == user.username for existing_user in existing_users
+    )
+    email_exists = any(
+        existing_user.email == user.email for existing_user in existing_users
     )
 
-    if existing_user:
-        if existing_user.username == user.username:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Username already registered",
-            )
+    if username_exists:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Username already registered",
+        )
+
+    if email_exists:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="Email already registered"
         )
