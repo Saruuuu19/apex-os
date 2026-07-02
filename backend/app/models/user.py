@@ -2,9 +2,14 @@ from datetime import UTC, datetime
 from uuid import UUID as PyUUID, uuid4
 
 from sqlalchemy import UUID as SqlUUID, DateTime, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.routine import Routine
 
 
 class User(Base):
@@ -24,3 +29,4 @@ class User(Base):
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
     )
+    routines: Mapped[list["Routine"]] = relationship(back_populates="user")
