@@ -9,9 +9,11 @@ from app.database import Base
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
     from app.models.user import User
     from app.models.routine_exercise import RoutineExercise
+    from app.models.workout_session import WorkoutSession
 
 
 class Routine(Base):
@@ -25,5 +27,8 @@ class Routine(Base):
     )
     user: Mapped["User"] = relationship(back_populates="routines")
     routine_exercises: Mapped[list["RoutineExercise"]] = relationship(
+        back_populates="routine"
+    )
+    workout_sessions: Mapped[list["WorkoutSession"]] = relationship(
         back_populates="routine"
     )

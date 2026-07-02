@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.routine import Routine
+    from app.models.workout_session import WorkoutSession
 
 
 class User(Base):
@@ -30,3 +31,6 @@ class User(Base):
         onupdate=lambda: datetime.now(UTC),
     )
     routines: Mapped[list["Routine"]] = relationship(back_populates="user")
+    workout_sessions: Mapped[list["WorkoutSession"]] = relationship(
+        back_populates="user"
+    )

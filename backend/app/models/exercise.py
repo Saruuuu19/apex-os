@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.routine_exercise import RoutineExercise
+    from app.models.workout_exercise import WorkoutExercise
 
 
 class Exercise(Base):
@@ -27,5 +28,8 @@ class Exercise(Base):
     media_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     routine_exercises: Mapped[list["RoutineExercise"]] = relationship(
+        back_populates="exercise"
+    )
+    workout_exercises: Mapped[list["WorkoutExercise"]] = relationship(
         back_populates="exercise"
     )
