@@ -28,7 +28,9 @@ class WorkoutExercise(Base):
     order: Mapped[int] = mapped_column(nullable=False)
 
     workout_session: Mapped["WorkoutSession"] = relationship(
-        back_populates="workout_exercises",
+        back_populates="workout_exercises"
     )
     exercise: Mapped["Exercise"] = relationship(back_populates="workout_exercises")
-    sets: Mapped[list["Set"]] = relationship(back_populates="workout_exercise")
+    sets: Mapped[list["Set"]] = relationship(
+        back_populates="workout_exercise", cascade="all, delete-orphan"
+    )
